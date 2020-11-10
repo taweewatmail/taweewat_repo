@@ -1,0 +1,4 @@
+How to run 
+1. Move cursor to server directory
+2. npm run dev
+*It run concurrent between client and server

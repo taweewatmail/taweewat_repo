@@ -11,5 +11,7 @@ router.get('/joke/:id', JokeCtrl.getJokeById)
 router.get('/jokes', JokeCtrl.getJokes)
 router.post('/joke/:id/like', JokeCtrl.likeJokeById)
 router.post('/joke/:id/dislike', JokeCtrl.dislikeJokeById)
+//router.get('/joke/:id/like', JokeCtrl.getLikeJokeById)
+//router.get('/joke/:id/dislike', JokeCtrl.getDislikeJokeById)
 
 module.exports = router

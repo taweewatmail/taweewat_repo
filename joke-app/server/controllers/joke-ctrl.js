@@ -115,7 +115,6 @@ getJokes = async (req, res) => {
         return res.status(200).json({ success: true, data: jokes })
     }).catch(err => console.log(err))
 }
-
 likeJokeById = async (req, res) => {
     const body = req.body
 
@@ -186,8 +185,35 @@ dislikeJokeById = async (req, res) => {
                 })
             })
     })
-}
+}/*
+getLikeJokeById = async (req, res) => {
+    await Joke.findOne({ _id: req.params.id }, (err, joke) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
 
+        if (!joke) {
+            return res
+                .status(404)
+                .json({ success: false, error: 'Like joke not found' })
+        }
+        return res.status(200).json({ success: true, data: joke })
+    }).catch(err => console.log(err))
+}
+getDislikeJokeById = async (req, res) => {
+    await Joke.findOne({ _id: req.params.id }, (err, joke) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!joke) {
+            return res
+                .status(404)
+                .json({ success: false, error: 'Dislike joke not found' })
+        }
+        return res.status(200).json({ success: true, data: joke })
+    }).catch(err => console.log(err))
+}*/
 module.exports = {
     createJoke,
     updateJoke,
@@ -196,4 +222,6 @@ module.exports = {
     getJokeById,
     likeJokeById,
     dislikeJokeById,
+    //getLikeJokeById,
+    //getDislikeJokeById,
 }

@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import ReactTable from 'react-table-6'
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { logoutUser } from "../actions/authActions";
 import api from '../api'
 
 import styled from 'styled-components'
@@ -7,7 +10,7 @@ import styled from 'styled-components'
 import 'react-table-6/react-table.css'
 
 const Wrapper = styled.div`
-    padding: 0 40px 40px 40px;
+    margin: 15px 15px 15px 5px;
 `
 
 const Update = styled.div`
@@ -19,7 +22,6 @@ const Delete = styled.div`
     color: #ff0000;
     cursor: pointer;
 `
-
 class UpdateJoke extends Component {
     updateUser = event => {
         event.preventDefault()
@@ -50,7 +52,6 @@ class DeleteJoke extends Component {
         return <Delete onClick={this.deleteUser}>Delete</Delete>
     }
 }
-
 class JokesList extends Component {
     constructor(props) {
         super(props)
@@ -63,7 +64,6 @@ class JokesList extends Component {
 
     componentDidMount = async () => {
         this.setState({ isLoading: true })
-
         await api.getAllJokes().then(jokes => {
             this.setState({
                 jokes: jokes.data.data,
@@ -71,11 +71,23 @@ class JokesList extends Component {
             })
         })
     }
+    handleLikeJoke = async () => {
+        const { id, type, setup, punchline } = this.state
+        const payload = { type, setup, punchline }
 
+        await api.updateJokeById(id, payload).then(res => {
+            window.alert(`Joke liked successfully`)
+            this.setState({
+                type: '',
+                setup: '',
+                punchline: '',
+            })
+        })
+        window.location.href = `/jokes/list`
+    }
     render() {
         const { jokes, isLoading } = this.state
-        console.log('TCL: JokesList -> render -> jokes', jokes)
-
+        console.log('TCL: JokesList -> render -> jokes', jokes) 
         const columns = [
             {
                 Header: 'ID',
@@ -95,6 +107,16 @@ class JokesList extends Component {
             {
                 Header: 'Punchline',
                 accessor: 'punchline',
+                filterable: true,
+            },
+            {
+                Header: 'Like',
+                accessor: 'like',
+                filterable: true,
+            },
+            {
+                Header: 'Dislike',
+                accessor: 'dislike',
                 filterable: true,
             },
             {
@@ -142,5 +164,14 @@ class JokesList extends Component {
         )
     }
 }
-
-export default JokesList
+JokesList.propTypes = {
+    logoutUser: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
+};
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+export default connect(
+    mapStateToProps,
+    { logoutUser }
+)(JokesList);

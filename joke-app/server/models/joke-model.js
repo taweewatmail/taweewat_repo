@@ -11,5 +11,4 @@ const Joke = new Schema(
     },
     { timestamps: true },
 )
-
 module.exports = mongoose.model('jokes', Joke)

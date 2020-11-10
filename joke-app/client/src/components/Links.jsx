@@ -1,11 +1,17 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { logoutUser } from "../actions/authActions";
 const Collapse = styled.div.attrs({
     className: 'collpase navbar-collapse',
 })``
-
+const Button = styled.button.attrs({
+    className: `btn btn-primary`,
+})`
+    margin: 15px 15px 15px 5px;
+`
 const List = styled.div.attrs({
     className: 'navbar-nav mr-auto',
 })``
@@ -15,6 +21,10 @@ const Item = styled.div.attrs({
 })``
 
 class Links extends Component {
+    onLogoutClick = e => {
+        e.preventDefault();
+        this.props.logoutUser();
+    };
     render() {
         return (
             <React.Fragment>
@@ -33,11 +43,28 @@ class Links extends Component {
                                 Create Joke
                             </Link>
                         </Item>
+                        <Item>
+                            
+                        </Item>
                     </List>
+                    <Button
+                        onClick={this.onLogoutClick}>
+                        Logout
+                    </Button>
                 </Collapse>
             </React.Fragment>
         )
     }
-}
 
-export default Links
+}
+Links.propTypes = {
+    logoutUser: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
+};
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+export default connect(
+    mapStateToProps,
+    { logoutUser }
+)(Links);

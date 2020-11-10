@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { logoutUser } from "../actions/authActions";
 import api from '../api'
 
 import styled from 'styled-components'
@@ -44,30 +47,36 @@ class JokesUpdate extends Component {
             type: '',
             setup: '',
             punchline: '',
+            like: '',
+            dislike: '',
         }
     }
 
-    handleChangeInputName = async event => {
-        const name = event.target.value
-        this.setState({ name })
+    handleChangeInputType = async event => {
+        const type = event.target.value
+        this.setState({ type })
     }
 
-    handleChangeInputRating = async event => {
-        const rating = event.target.validity.valid
-            ? event.target.value
-            : this.state.rating
-
-        this.setState({ rating })
+    handleChangeInputSetup = async event => {
+        const setup = event.target.value
+        this.setState({ setup })
     }
 
-    handleChangeInputTime = async event => {
-        const time = event.target.value
-        this.setState({ time })
+    handleChangeInputPunchline = async event => {
+        const punchline = event.target.value
+        this.setState({ punchline })
     }
-
+    handleChangeInputLike = async event => {
+        const like = event.target.value
+        this.setState({ like })
+    }
+    handleChangeInputDislike = async event => {
+        const dislike = event.target.value
+        this.setState({ dislike })
+    }
     handleUpdateJoke = async () => {
-        const { id, type, setup, punchline } = this.state
-        const payload = { type, setup, punchline }
+        const { id, type, setup, punchline, like, dislike } = this.state
+        const payload = { type, setup, punchline, like, dislike }
 
         await api.updateJokeById(id, payload).then(res => {
             window.alert(`Joke updated successfully`)
@@ -75,8 +84,11 @@ class JokesUpdate extends Component {
                 type: '',
                 setup: '',
                 punchline: '',
+                like: '',
+                dilike: '',
             })
         })
+        window.location.href = `/jokes/list`
     }
 
     componentDidMount = async () => {
@@ -87,41 +99,64 @@ class JokesUpdate extends Component {
             type: joke.data.data.type,
             setup: joke.data.data.setup,
             punchline: joke.data.data.punchline,
+            like: joke.data.data.like,
+            dislike: joke.data.data.dislike,
         })
     }
 
     render() {
-        const { type, setup, punchline } = this.state
+        const { type, setup, punchline, like, dislike } = this.state
         return (
             <Wrapper>
-                <Title>Create Joke</Title>
+                <Title>Update Joke</Title>
 
                 <Label>Type: </Label>
                 <InputText
                     type="text"
                     value={type}
-                    onChange={this.handleChangeInputName}
+                    onChange={this.handleChangeInputType}
                 />
 
                 <Label>setup: </Label>
                 <InputText
-                    type="number"
+                    type="text"
                     value={setup}
-                    onChange={this.handleChangeInputRating}
+                    onChange={this.handleChangeInputSetup}
                 />
 
                 <Label>Punchline: </Label>
                 <InputText
                     type="text"
                     value={punchline}
-                    onChange={this.handleChangeInputTime}
+                    onChange={this.handleChangeInputPunchline}
+                />
+                <Label>Like: </Label>
+                <InputText
+                    type="text"
+                    value={like}
+                    onChange={this.handleChangeInputLike}
                 />
 
+                <Label>Dislike: </Label>
+                <InputText
+                    type="text"
+                    value={dislike}
+                    onChange={this.handleChangeInputDislike}
+                />
                 <Button onClick={this.handleUpdateJoke}>Update Joke</Button>
                 <CancelButton href={'/jokes/list'}>Cancel</CancelButton>
             </Wrapper>
         )
     }
 }
-
-export default JokesUpdate
+JokesUpdate.propTypes = {
+    logoutUser: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
+};
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+export default connect(
+    mapStateToProps,
+    { logoutUser }
+)(JokesUpdate);
